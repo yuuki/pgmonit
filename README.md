@@ -1,5 +1,5 @@
 pgmonit
 =======
 
-Postgres web monitor in Go.
+A web-based Postgres statistics monitor in Go.
 
