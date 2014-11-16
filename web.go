@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 	"log"
+	"net/http"
 
 	"github.com/zenazn/goji"
 	"github.com/zenazn/goji/web"
@@ -13,12 +13,14 @@ import (
 	"github.com/zenazn/goji/graceful"
 )
 
-func index(c web.C, w http.ResponseWriter, r *http.Request) {
-        fmt.Fprintf(w, "Hello, %s!", c.URLParams["name"])
+type ClientCount struct {
+	Addr  string `db:"client_addr"`
+	Count int    `db:"count"`
 }
 
-func clients(c web.C, w http.ResponseWriter, r *http.Request) {
-	rows, err := DB.Query(`
+func index(c web.C, w http.ResponseWriter, r *http.Request) {
+	var clientCounts []ClientCount
+	err := DB.Select(&clientCounts, `
 		SELECT client_addr, count(*) AS count FROM pg_stat_activity
 		GROUP BY client_addr ORDER BY count
 	`)
@@ -27,15 +29,8 @@ func clients(c web.C, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	for rows.Next() {
-		var client_addr string
-		var count int
-		err := rows.Scan(&client_addr, &count)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		fmt.Fprintf(w, "%s: %d\n", client_addr, count)
+	for _, count := range clientCounts {
+		fmt.Fprintf(w, "%s: %d\n", count.Addr, count.Count)
 	}
 }
 
@@ -44,7 +39,6 @@ func AppUp() {
 	goji.Use(middleware.NoCache)
 
 	goji.Get("/", index)
-	goji.Get("/clients", clients)
 
 	goji.DefaultMux.Compile()
 	// Install our handler at the root of the standard net/http default mux.
