@@ -36,7 +36,7 @@ func main() {
 		if opts.Url = os.Getenv("DATABASE_URL"); opts.Url == "" {
 			if opts.User == "" {
 				fmt.Fprintf(os.Stderr, "user required")
-				parser.WriteHelp(os.Stdout)
+				os.Exit(0)
 			}
 
 			opts.Url = fmt.Sprintf(
