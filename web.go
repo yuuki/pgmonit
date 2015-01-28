@@ -1,17 +1,17 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
 	"time"
-	"database/sql"
 
 	"github.com/zenazn/goji"
-	"github.com/zenazn/goji/web"
-	"github.com/zenazn/goji/web/middleware"
 	"github.com/zenazn/goji/bind"
 	"github.com/zenazn/goji/graceful"
+	"github.com/zenazn/goji/web"
+	"github.com/zenazn/goji/web/middleware"
 )
 
 type ClientCount struct {
@@ -20,21 +20,21 @@ type ClientCount struct {
 }
 
 type Replication struct {
-	Pid             int       `db:"pid"`
-	UseSysid        string    `db:"usesysid"`
-	UseName         string    `db:"usename"`
-	ApplicationName string    `db:"application_name"`
-	ClientAddr      string    `db:"client_addr"`
+	Pid             int            `db:"pid"`
+	UseSysid        string         `db:"usesysid"`
+	UseName         string         `db:"usename"`
+	ApplicationName string         `db:"application_name"`
+	ClientAddr      string         `db:"client_addr"`
 	ClientHostname  sql.NullString `db:"client_hostname"`
-	ClientPort      string    `db:"client_port"`
-	BackendStart    time.Time `db:"backend_start"`
-	State           string    `db:"state"`
-	SentLocation    string    `db:"sent_location"`
-	WriteLocation   string    `db:"write_location"`
-	FlushLocation   string    `db:"flush_location"`
-	ReplayLocation  string    `db:"replay_location"`
-	SyncPriority    int       `db:"sync_priority"`
-	SyncState       string    `db:"sync_state"`
+	ClientPort      string         `db:"client_port"`
+	BackendStart    time.Time      `db:"backend_start"`
+	State           string         `db:"state"`
+	SentLocation    string         `db:"sent_location"`
+	WriteLocation   string         `db:"write_location"`
+	FlushLocation   string         `db:"flush_location"`
+	ReplayLocation  string         `db:"replay_location"`
+	SyncPriority    int            `db:"sync_priority"`
+	SyncState       string         `db:"sync_state"`
 }
 
 func index(c web.C, w http.ResponseWriter, r *http.Request) {
